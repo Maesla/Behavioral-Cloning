@@ -31,6 +31,12 @@ with open(FLAGS.log_file) as csvfile:
         samples.append(line)
 
 train_samples, validation_samples = train_test_split(samples, test_size=0.2)
+validation_samples, evaluation_samples = train_test_split(validation_samples, test_size=0.5)
+
+print("Total samples  {}".format(len(samples)))
+print("Training samples  {}".format(len(train_samples)))
+print("Validation samples {}".format(len(validation_samples)))
+print("Evaluation samples {}".format(len(evaluation_samples)))
 
 
 def generator(samples, batch_size=32):
@@ -73,6 +79,8 @@ def generator(samples, batch_size=32):
 batch_size = FLAGS.batch_size
 train_generator = generator(train_samples, batch_size=batch_size)
 validation_generator = generator(validation_samples, batch_size=batch_size)
+evaluation_generator = generator(evaluation_samples, batch_size=batch_size)
+
 
 #Model
 model = Sequential()
@@ -97,17 +105,24 @@ model.add(Dense(10))
 model.add(Dropout(0.5))
 model.add(Dense(1))
 
-print("samples_per_epoch  {}".format(len(train_samples)))
-print("nb_val_samples {}".format(len(validation_samples)))
-
 # Len x3 x2 => x3 (3 cameras) x2 (mirroring)
 train_samples_len = len(train_samples)*3*2
 validation_samples_len = len(validation_samples)*3*2
 
+#train_samples_len*=0.01
+#validation_samples_len*=0.01
+
 model.compile(loss='mse', optimizer='adam')
-history_object = model.fit_generator(train_generator, samples_per_epoch= \
-            train_samples_len, validation_data=validation_generator, \
-            nb_val_samples=validation_samples_len, nb_epoch=FLAGS.epochs)
+history_object = model.fit_generator(\
+            train_generator,samples_per_epoch=train_samples_len,\
+            validation_data=validation_generator,nb_val_samples=validation_samples_len,\
+            nb_epoch=FLAGS.epochs)
+
+
+evaluation_samples_len = len(evaluation_samples)
+print("Evaluation. Samples {}".format(evaluation_samples_len))
+scores = model.evaluate_generator(evaluation_generator,evaluation_samples_len)
+print("{}: {}".format(model.metrics_names[0], scores))
 
 if (FLAGS.plot):
     ### print the keys contained in the history object
