@@ -72,6 +72,7 @@ The architecture is pretty much the same. I have made these changes:
 5. I have added a fully connected layer at the end, with only one neuron (the steering wheel)
 
 The whole model can be found in [model.py](./model.py), line 86
+
 ####2. Attempts to reduce overfitting in the model
 
 The model contains dropout layers after all the layers in order to reduce overfitting [model.py](./model.py)
@@ -149,9 +150,9 @@ The final set was increased in two ways.
   4. Q = -1 for the right image
 5. The second way to increase the data set was the mirroring approach. All the set is mirrored, and the angle is mirrored too. This can be found at [model.py](./model.py) (line 68)
 
-So, the final set is 4385 data points x 3 cameras x 2 (one normal, one mirrored) = 4385*3*2= 26310
+So, the final set is 4385 data points x 3 cameras x 2 (one normal, one mirrored) = 4385x3x2= 26310
 
-I have found that a import problem could the input itself. The vehicle input has to be either the keyboard or dragging the mouse. Although the keyboard has been setup with sensibility (the input is not only 0 or 1), the Unity Wheel Collider is very sensitive to hard turn. I have the feeling that with a real steering wheel, like a logitech G29 or even with a video game controller the data acquisition could be quite better.
+I have found that a major improvement could be the vehicle input. The vehicle input has to be either the keyboard or dragging the mouse. Although the keyboard has been setup with sensibility (the input is not only 0 or 1), the Unity Wheel Collider is very sensitive to hard turn. I have the feeling that with a real steering wheel, like a logitech G29 or even with a video game controller the data acquisition could be quite better.
 
 
 
